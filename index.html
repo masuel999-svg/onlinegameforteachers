@@ -1,0 +1,1877 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تحدي معلمي القرآن والتجويد أونلاين - تصميم د. محسن الكاشف</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts: Cairo, Amiri & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Cairo:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            cairo: ['Cairo', 'sans-serif'],
+            amiri: ['Amiri', 'serif'],
+            en: ['Plus Jakarta Sans', 'sans-serif']
+          },
+          colors: {
+            emeraldDeep: '#064e3b',
+            navyRoyal: '#0f172a',
+            goldAccent: '#d97706',
+            goldLight: '#fef3c7'
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: linear-gradient(135deg, #f8fafc 0%, #ecfdf5 50%, #eff6ff 100%);
+      min-height: 100vh;
+      color: #0f172a;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    /* 3D Card Flip Mechanics */
+    .card-scene {
+      perspective: 900px;
+    }
+    .card-object {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .card-flipped {
+      transform: rotateY(180deg);
+    }
+    .card-side {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 0.85rem;
+    }
+    .card-back {
+      transform: rotateY(180deg);
+    }
+
+    /* Active Team Pulse Ring */
+    @keyframes activeTeamGlow {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(217, 119, 6, 0.45); }
+      50% { box-shadow: 0 0 0 8px rgba(217, 119, 6, 0); }
+    }
+    .team-active-card {
+      animation: activeTeamGlow 2s infinite;
+    }
+
+    ::-webkit-scrollbar { width: 7px; }
+    ::-webkit-scrollbar-thumb { background: #047857; border-radius: 999px; }
+  </style>
+</head>
+<body class="p-2 sm:p-4 lg:p-5 overflow-x-hidden">
+
+  <!-- TOP EXECUTIVE CREDIT BAR -->
+  <div class="max-w-7xl mx-auto mb-3 bg-gradient-to-l from-emerald-950 via-slate-900 to-emerald-950 text-white rounded-2xl px-4 py-2.5 shadow-lg border border-amber-400/50 flex flex-wrap items-center justify-between gap-2 text-xs sm:text-sm">
+    <div class="flex items-center gap-2.5 font-bold text-amber-300">
+      <i class="fa-solid fa-award text-amber-400 text-base"></i>
+      <span>تصميم وإعداد: د. محسن الكاشف | Designed by: Dr. Mohsen El-Khashef</span>
+    </div>
+    <div class="flex items-center gap-2">
+      <button id="muteBtn" onclick="toggleMute()" class="bg-white/10 hover:bg-white/20 text-emerald-100 px-3 py-1 rounded-xl text-xs font-bold transition flex items-center gap-1.5">
+        <i id="muteIcon" class="fa-solid fa-volume-high text-amber-400"></i>
+        <span id="muteText">الصوت مفعل</span>
+      </button>
+      <button onclick="openFinishModal()" class="bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 text-slate-950 px-3 py-1 rounded-xl text-xs font-black transition shadow flex items-center gap-1.5">
+        <i class="fa-solid fa-crown"></i>
+        <span>إنهاء المسابقة وإعلان البطل</span>
+      </button>
+      <button onclick="confirmReset()" class="bg-rose-600/80 hover:bg-rose-600 text-white px-2.5 py-1 rounded-xl text-xs font-bold transition" title="إعادة ضبط اللعبة">
+        <i class="fa-solid fa-rotate-right"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- HEADER & 3-TEAM LIVE SCOREBOARD -->
+  <header class="max-w-7xl mx-auto mb-4 bg-white/95 backdrop-blur-md rounded-3xl p-4 sm:p-5 shadow-xl border border-emerald-200">
+    <!-- Title Row -->
+    <div class="flex flex-wrap items-center justify-between gap-3 pb-4 mb-4 border-b border-slate-200">
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-emerald-800 to-teal-900 text-amber-300 flex items-center justify-center text-2xl sm:text-3xl shadow-md border border-amber-400/40">
+          <i class="fa-solid fa-book-quran"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2 flex-wrap">
+            <h1 class="text-lg sm:text-2xl font-black text-emerald-950">تحدي معلمي القرآن والتجويد أونلاين</h1>
+            <span class="bg-emerald-100 text-emerald-800 border border-emerald-300 text-xs font-extrabold px-2.5 py-0.5 rounded-full">
+              80 كارت تدريبي وتفاعلي
+            </span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-500 font-semibold mt-0.5">
+            إدارة الحصص والمنصات • مصطلحات التجويد بالإنجليزية • أوامر وتوجيهات المعلم داخل الحصة
+          </p>
+        </div>
+      </div>
+
+      <!-- Remaining Cards Counter -->
+      <div class="flex items-center gap-3 bg-slate-50 border border-slate-200 px-4 py-2 rounded-2xl">
+        <div class="text-center">
+          <div class="text-[11px] font-bold text-slate-500">الكروت المتبقية</div>
+          <div class="text-xl font-black text-emerald-800">
+            <span id="remainingCount">80</span> <span class="text-xs text-slate-400 font-normal">/ 80</span>
+          </div>
+        </div>
+        <div class="h-8 w-[1px] bg-slate-200"></div>
+        <div class="text-center">
+          <div class="text-[11px] font-bold text-slate-500">الجولة الحالية</div>
+          <div id="roundDisplay" class="text-xl font-black text-amber-600">1</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 TEAMS SCOREBOARD GRID -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4" id="teamsContainer">
+      <!-- Team 1 -->
+      <div id="teamCard-0" onclick="selectTurn(0)" class="cursor-pointer rounded-2xl p-3.5 border-2 transition-all relative bg-emerald-50/70 border-emerald-600 team-active-card">
+        <div class="flex items-center justify-between mb-1">
+          <span id="turnBadge-0" class="bg-emerald-700 text-white text-[10px] font-extrabold px-2.5 py-0.5 rounded-full flex items-center gap-1">
+            <i class="fa-solid fa-microphone-lines"></i> الدور الحالي
+          </span>
+          <div class="flex items-center gap-1" id="badges-0">
+            <!-- Shield / Double badges -->
+          </div>
+        </div>
+        <div class="flex items-center justify-between gap-2 mt-1">
+          <input type="text" id="teamName-0" value="الفريق الأول: فرسان التجويد" onclick="event.stopPropagation()" onchange="updateTeamName(0, this.value)"
+                 class="bg-transparent font-black text-sm sm:text-base text-emerald-950 border-b border-transparent focus:border-emerald-600 focus:outline-none w-full" title="اضغط لتعديل اسم الفريق">
+          <i class="fa-solid fa-pen text-[10px] text-slate-400"></i>
+        </div>
+        <div class="flex items-center justify-between mt-3 pt-2 border-t border-emerald-200/70">
+          <div class="flex items-baseline gap-1">
+            <span id="teamScore-0" class="text-2xl sm:text-3xl font-black text-emerald-800">0</span>
+            <span class="text-xs font-bold text-emerald-600">نقطة</span>
+          </div>
+          <div class="flex items-center gap-1" onclick="event.stopPropagation()">
+            <button onclick="adjustScore(0, -50)" class="w-7 h-7 rounded-lg bg-white border border-slate-300 hover:bg-rose-50 hover:text-rose-600 text-slate-600 font-black text-xs transition">-50</button>
+            <button onclick="adjustScore(0, 50)" class="w-7 h-7 rounded-lg bg-white border border-slate-300 hover:bg-emerald-100 hover:text-emerald-700 text-slate-600 font-black text-xs transition">+50</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Team 2 -->
+      <div id="teamCard-1" onclick="selectTurn(1)" class="cursor-pointer rounded-2xl p-3.5 border-2 transition-all relative bg-white border-slate-200 hover:border-blue-400">
+        <div class="flex items-center justify-between mb-1">
+          <span id="turnBadge-1" class="hidden bg-blue-700 text-white text-[10px] font-extrabold px-2.5 py-0.5 rounded-full flex items-center gap-1">
+            <i class="fa-solid fa-microphone-lines"></i> الدور الحالي
+          </span>
+          <span id="idleBadge-1" class="text-[10px] font-bold text-slate-400">اضغط لتحديد الدور</span>
+          <div class="flex items-center gap-1" id="badges-1"></div>
+        </div>
+        <div class="flex items-center justify-between gap-2 mt-1">
+          <input type="text" id="teamName-1" value="الفريق الثاني: رواد الأونلاين" onclick="event.stopPropagation()" onchange="updateTeamName(1, this.value)"
+                 class="bg-transparent font-black text-sm sm:text-base text-slate-900 border-b border-transparent focus:border-blue-600 focus:outline-none w-full" title="اضغط لتعديل اسم الفريق">
+          <i class="fa-solid fa-pen text-[10px] text-slate-400"></i>
+        </div>
+        <div class="flex items-center justify-between mt-3 pt-2 border-t border-slate-100">
+          <div class="flex items-baseline gap-1">
+            <span id="teamScore-1" class="text-2xl sm:text-3xl font-black text-blue-800">0</span>
+            <span class="text-xs font-bold text-blue-600">نقطة</span>
+          </div>
+          <div class="flex items-center gap-1" onclick="event.stopPropagation()">
+            <button onclick="adjustScore(1, -50)" class="w-7 h-7 rounded-lg bg-slate-50 border border-slate-300 hover:bg-rose-50 hover:text-rose-600 text-slate-600 font-black text-xs transition">-50</button>
+            <button onclick="adjustScore(1, 50)" class="w-7 h-7 rounded-lg bg-slate-50 border border-slate-300 hover:bg-blue-100 hover:text-blue-700 text-slate-600 font-black text-xs transition">+50</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Team 3 -->
+      <div id="teamCard-2" onclick="selectTurn(2)" class="cursor-pointer rounded-2xl p-3.5 border-2 transition-all relative bg-white border-slate-200 hover:border-amber-400">
+        <div class="flex items-center justify-between mb-1">
+          <span id="turnBadge-2" class="hidden bg-amber-600 text-white text-[10px] font-extrabold px-2.5 py-0.5 rounded-full flex items-center gap-1">
+            <i class="fa-solid fa-microphone-lines"></i> الدور الحالي
+          </span>
+          <span id="idleBadge-2" class="text-[10px] font-bold text-slate-400">اضغط لتحديد الدور</span>
+          <div class="flex items-center gap-1" id="badges-2"></div>
+        </div>
+        <div class="flex items-center justify-between gap-2 mt-1">
+          <input type="text" id="teamName-2" value="الفريق الثالث: سفراء العربية" onclick="event.stopPropagation()" onchange="updateTeamName(2, this.value)"
+                 class="bg-transparent font-black text-sm sm:text-base text-slate-900 border-b border-transparent focus:border-amber-600 focus:outline-none w-full" title="اضغط لتعديل اسم الفريق">
+          <i class="fa-solid fa-pen text-[10px] text-slate-400"></i>
+        </div>
+        <div class="flex items-center justify-between mt-3 pt-2 border-t border-slate-100">
+          <div class="flex items-baseline gap-1">
+            <span id="teamScore-2" class="text-2xl sm:text-3xl font-black text-amber-700">0</span>
+            <span class="text-xs font-bold text-amber-600">نقطة</span>
+          </div>
+          <div class="flex items-center gap-1" onclick="event.stopPropagation()">
+            <button onclick="adjustScore(2, -50)" class="w-7 h-7 rounded-lg bg-slate-50 border border-slate-300 hover:bg-rose-50 hover:text-rose-600 text-slate-600 font-black text-xs transition">-50</button>
+            <button onclick="adjustScore(2, 50)" class="w-7 h-7 rounded-lg bg-slate-50 border border-slate-300 hover:bg-amber-100 hover:text-amber-700 text-slate-600 font-black text-xs transition">+50</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN 80-CARD BOARD -->
+  <main class="max-w-7xl mx-auto bg-white/95 backdrop-blur-md rounded-3xl p-4 sm:p-5 shadow-xl border border-slate-200">
+    <!-- Board Legend & Info Bar -->
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-4 pb-3 border-b border-slate-100">
+      <div class="flex items-center gap-2">
+        <span class="w-3 h-3 rounded-full bg-emerald-600 animate-ping"></span>
+        <span class="text-xs sm:text-sm font-bold text-slate-700">
+          الدور الآن على: <strong id="currentTurnAnnouncer" class="text-emerald-800 underline">الفريق الأول: فرسان التجويد</strong> — اختر رقماً من 1 إلى 80
+        </span>
+      </div>
+
+      <div class="flex items-center gap-2 flex-wrap text-[11px] font-bold">
+        <span class="bg-emerald-50 text-emerald-800 border border-emerald-200 px-2.5 py-1 rounded-lg flex items-center gap-1">
+          <i class="fa-solid fa-circle-question text-emerald-600"></i> 60 سؤال تدريبي (+100 نقطة)
+        </span>
+        <span class="bg-amber-50 text-amber-800 border border-amber-200 px-2.5 py-1 rounded-lg flex items-center gap-1">
+          <i class="fa-solid fa-gift text-amber-500"></i> 10 كروت جوائز
+        </span>
+        <span class="bg-rose-50 text-rose-800 border border-rose-200 px-2.5 py-1 rounded-lg flex items-center gap-1">
+          <i class="fa-solid fa-gavel text-rose-600"></i> 10 كروت عقاب وأحكام
+        </span>
+      </div>
+    </div>
+
+    <!-- 80 Cards Grid (8 columns on desktop, 5 on tablet, 4 on mobile) -->
+    <div id="cardsGrid" class="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-8 lg:grid-cols-10 gap-2 sm:gap-2.5">
+      <!-- 80 Cards rendered via JS -->
+    </div>
+  </main>
+
+  <!-- FOOTER CREDITS -->
+  <footer class="max-w-7xl mx-auto mt-5 bg-slate-900 text-slate-300 rounded-2xl p-4 text-center text-xs flex flex-col sm:flex-row items-center justify-between gap-2 border border-slate-800 shadow">
+    <div class="font-bold text-amber-400">
+      <i class="fa-solid fa-graduation-cap ml-1"></i>
+      تصميم وإعداد: د. محسن الكاشف (Dr. Mohsen El-Khashef)
+    </div>
+    <div class="text-slate-400">
+      حقيبة تدريب معلمي القرآن الكريم والتجويد واللغة العربية للناطقين بغيرها أونلاين • 80 بطاقة تفاعلية
+    </div>
+  </footer>
+
+  <!-- ================= MODALS ================= -->
+
+  <!-- 1. QUESTION MODAL -->
+  <div id="questionModal" class="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-sm hidden flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-white rounded-3xl shadow-2xl border-4 border-emerald-700 max-w-2xl w-full p-5 sm:p-6 relative overflow-hidden">
+      <!-- Top Bar -->
+      <div class="flex items-center justify-between gap-2 mb-3">
+        <span id="qCategoryBadge" class="bg-emerald-100 text-emerald-900 text-xs font-extrabold px-3 py-1 rounded-full">
+          إدارة الحصص أونلاين
+        </span>
+        <span id="qTeamTurnBadge" class="bg-slate-900 text-amber-300 text-xs font-bold px-3 py-1 rounded-full">
+          سؤال للفريق الأول
+        </span>
+      </div>
+
+      <!-- Question Text -->
+      <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 mb-4">
+        <h3 id="qPromptText" class="text-base sm:text-lg font-black text-slate-900 leading-relaxed">
+          نص السؤال يظهر هنا...
+        </h3>
+      </div>
+
+      <!-- Options Grid -->
+      <div id="qOptionsContainer" class="grid grid-cols-1 gap-2.5 mb-4">
+        <!-- Options injected -->
+      </div>
+
+      <!-- Explanation / Feedback Box -->
+      <div id="qFeedbackBox" class="hidden p-3.5 rounded-2xl text-xs sm:text-sm font-bold mb-4 leading-relaxed"></div>
+
+      <!-- Next Turn Button -->
+      <button id="qNextBtn" onclick="finishTurnAndClose('questionModal')" class="hidden w-full bg-emerald-800 hover:bg-emerald-900 text-white font-black py-3 rounded-2xl shadow-lg transition">
+        تسجيل النتيجة والانتقال للفريق التالي <i class="fa-solid fa-arrow-left mr-1"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- 2. REWARD / GIFT MODAL -->
+  <div id="rewardModal" class="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-sm hidden flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-white rounded-3xl shadow-2xl border-4 border-amber-400 max-w-lg w-full p-6 text-center relative overflow-hidden">
+      <div class="w-16 h-16 mx-auto mb-3 bg-gradient-to-tr from-amber-500 to-yellow-400 text-white rounded-2xl flex items-center justify-center text-3xl shadow-lg animate-bounce">
+        <i class="fa-solid fa-gift"></i>
+      </div>
+      <span id="rTeamBadge" class="inline-block bg-amber-100 text-amber-900 text-xs font-extrabold px-3 py-1 rounded-full mb-2">
+        مكافأة للفريق
+      </span>
+      <h3 id="rTitle" class="text-xl font-black text-slate-900 mb-2">عنوان الجائزة</h3>
+      <p id="rDesc" class="text-sm text-slate-600 font-semibold leading-relaxed mb-5">
+        تفاصيل الجائزة
+      </p>
+
+      <!-- Interactive Choice (e.g., Two Mystery Envelopes or Steal Target) -->
+      <div id="rInteractiveBox" class="hidden mb-5"></div>
+
+      <button id="rClaimBtn" onclick="claimRewardAndClose()" class="w-full bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 text-slate-950 font-black py-3 rounded-2xl shadow-lg transition">
+        تطبيق الجائزة والانتقال للفريق التالي ✨
+      </button>
+    </div>
+  </div>
+
+  <!-- 3. PENALTY & LIVE ACTION CHALLENGE MODAL -->
+  <div id="penaltyModal" class="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-sm hidden flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-white rounded-3xl shadow-2xl border-4 border-rose-600 max-w-lg w-full p-6 text-center relative overflow-hidden">
+      <div class="w-16 h-16 mx-auto mb-3 bg-gradient-to-tr from-rose-600 to-red-500 text-white rounded-2xl flex items-center justify-center text-3xl shadow-lg">
+        <i class="fa-solid fa-gavel"></i>
+      </div>
+      <span id="pTeamBadge" class="inline-block bg-rose-100 text-rose-800 text-xs font-extrabold px-3 py-1 rounded-full mb-2">
+        بطاقة عقاب / حكم تطبيقي
+      </span>
+      <h3 id="pTitle" class="text-xl font-black text-rose-700 mb-2">عنوان العقاب أو الحكم</h3>
+      <p id="pDesc" class="text-sm text-slate-700 font-semibold leading-relaxed mb-4 bg-rose-50/70 p-4 rounded-2xl border border-rose-200">
+        تفاصيل الحكم
+      </p>
+
+      <!-- Shield Status Notice -->
+      <div id="pShieldNotice" class="hidden mb-4 p-3 rounded-2xl bg-emerald-100 border border-emerald-400 text-emerald-900 text-xs sm:text-sm font-bold">
+        🛡️ يمتلك فريقك بطاقة الحصانة الذهبية! تم تفعيل الحصانة لإلغاء العقاب دون خسارة أي نقاط!
+      </div>
+
+      <!-- Action Buttons for Live Challenges vs Direct Penalties -->
+      <div id="pButtonsArea" class="flex flex-col sm:flex-row gap-2.5">
+        <!-- Injected dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. WINNER PODIUM MODAL -->
+  <div id="winnerModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl shadow-2xl border-4 border-amber-400 max-w-xl w-full p-6 text-center">
+      <div class="text-5xl mb-2">🏆👑🎉</div>
+      <h2 class="text-2xl font-black text-emerald-900 mb-1">النتائج النهائية للمسابقة</h2>
+      <p class="text-xs text-slate-500 font-bold mb-5">إعداد وتصميم: د. محسن الكاشف (Dr. Mohsen El-Khashef)</p>
+
+      <div id="podiumContainer" class="space-y-2.5 mb-6 text-right">
+        <!-- Sorted teams ranking -->
+      </div>
+
+      <div class="flex gap-3">
+        <button onclick="closeModal('winnerModal')" class="flex-1 bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold py-3 rounded-2xl transition">
+          عودة للوحة الكروت
+        </button>
+        <button onclick="resetGame()" class="flex-1 bg-emerald-800 hover:bg-emerald-900 text-white font-black py-3 rounded-2xl shadow-lg transition">
+          بدء مسابقة جديدة 🔄
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. CUSTOM CONFIRMATION MODAL (No browser confirm/alert) -->
+  <div id="confirmModal" class="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl shadow-2xl border-2 border-slate-300 max-w-sm w-full p-6 text-center">
+      <div class="w-12 h-12 mx-auto mb-3 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center text-xl">
+        <i class="fa-solid fa-rotate-right"></i>
+      </div>
+      <h3 class="text-lg font-black text-slate-900 mb-1">إعادة بدء المسابقة؟</h3>
+      <p class="text-xs text-slate-500 font-semibold mb-5">سيتم تصفير نقاط الفرق الثلاثة وإعادة خلط الـ 80 كارتاً من جديد.</p>
+      <div class="flex gap-2.5">
+        <button onclick="closeModal('confirmModal')" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-xl transition">إلغاء</button>
+        <button onclick="resetGame()" class="flex-1 bg-rose-600 hover:bg-rose-700 text-white font-bold py-2.5 rounded-xl transition">نعم، أعد الضبط</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= JAVASCRIPT LOGIC ================= -->
+  <script>
+    // Web Audio Sound Engine
+    const SoundFX = {
+      ctx: null,
+      muted: false,
+      init() {
+        if (!this.ctx) {
+          const AC = window.AudioContext || window.webkitAudioContext;
+          if (AC) this.ctx = new AC();
+        }
+      },
+      play(type) {
+        if (this.muted) return;
+        try {
+          this.init();
+          if (!this.ctx) return;
+          if (this.ctx.state === 'suspended') this.ctx.resume();
+          const now = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          if (type === 'flip') {
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(420, now);
+            osc.frequency.exponentialRampToValueAtTime(640, now + 0.09);
+            gain.gain.setValueAtTime(0.12, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+            osc.start(now);
+            osc.stop(now + 0.1);
+          } else if (type === 'correct') {
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(523.25, now);
+            osc.frequency.setValueAtTime(659.25, now + 0.08);
+            osc.frequency.setValueAtTime(783.99, now + 0.16);
+            osc.frequency.setValueAtTime(1046.5, now + 0.24);
+            gain.gain.setValueAtTime(0.22, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+            osc.start(now);
+            osc.stop(now + 0.5);
+          } else if (type === 'wrong') {
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(210, now);
+            osc.frequency.setValueAtTime(155, now + 0.14);
+            gain.gain.setValueAtTime(0.2, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+            osc.start(now);
+            osc.stop(now + 0.35);
+          } else if (type === 'reward') {
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(587.33, now);
+            osc.frequency.setValueAtTime(880, now + 0.12);
+            osc.frequency.setValueAtTime(1174.66, now + 0.24);
+            gain.gain.setValueAtTime(0.22, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+            osc.start(now);
+            osc.stop(now + 0.5);
+          }
+        } catch (e) {}
+      }
+    };
+
+    function toggleMute() {
+      SoundFX.muted = !SoundFX.muted;
+      document.getElementById('muteIcon').className = SoundFX.muted
+        ? 'fa-solid fa-volume-xmark text-rose-400'
+        : 'fa-solid fa-volume-high text-amber-400';
+      document.getElementById('muteText').textContent = SoundFX.muted ? 'الصوت مكتوم' : 'الصوت مفعل';
+    }
+
+    // =========================================================================
+    // 60 UNIQUE, NON-REPEATING QUESTIONS (20 Online Management + 25 Tajweed + 15 Commands)
+    // =========================================================================
+    const QUESTIONS_60 = [
+      // --- القسم الأول: إدارة الحصص والمواقف في التعليم الأونلاين والأكاديميات (20 سؤالاً) ---
+      {
+        cat: "إدارة الحصص والأكاديميات أونلاين",
+        q: "1. دخلتَ غرفة الزوم في موعد الحصة تماماً ولم يحضر الطالب بعد مرور 5 دقائق، ما التصرف الاحترافي الأول؟",
+        options: [
+          "إغلاق الغرفة فوراً ومغادرة الحصة دون إبلاغ أحد",
+          "إرسال رسالة تذكير مهذبة للطالب أو ولي الأمر والانتظار حسب سياسة الأكاديمية (عادة 15 دقيقة)",
+          "الاتصال الهاتفي المتكرر بغضب وتوبيخ الطالب عند دخوله",
+          "احتساب الحصة ملغاة وإرجاع الرسوم فوراً"
+        ],
+        correct: 1,
+        exp: "الالتزام بسياسة الانتظار (10-15 دقيقة) مع إرسال رسالة تذكير لطيفة وتوثيق الحضور يحفظ حق المعلم واحترافية الأكاديمية."
+      },
+      {
+        cat: "إدارة الحصص والأكاديميات أونلاين",
+        q: "2. استأذن الطالب لتأجيل الحصة قبل موعدها بـ 20 دقيقة فقط لظرف عادي، كيف تتصرف وفق قواعد العمل الاحترافي؟",
+        options: [
+          "أوافق دائماً على التأجيل في أي وقت حتى لو قبل الحصة بدقيقة",
+          "أرفض بشدة وأغلق المحادثة دون توضيح",
+          "أوضح بلباقة أن سياسة الإلغاء تشترط الإبلاغ قبل 12 أو 24 ساعة، وأن وقت الحصة محجوز له بالكامل",
+          "أخصم منه ضعف ثمن الحصة كعقوبة"
+        ],
+        correct: 2,
+        exp: "توضيح سياسة الإلغاء المسبقة بلطف وحزم يحمي وقت المعلم من الفراغ المفاجئ ويعوّد الطالب على الانضباط."
+      },
+      {
+        cat: "إدارة الحصص والأكاديميات أونلاين",
+        q: "3. طالب أجنبي يطلب منك رقمك الشخصي للتعامل المباشر خارج منصة (Preply) أو خارج الأكاديمية التي تعمل بها، ما القرار الصحيح؟",
+        options: [
+          "أعطيه الرقم فوراً لتوفير عمولة المنصة أو الأكاديمية",
+          "أعتذر بلباقة وألتزم بميثاق الأمانة المهنية وقوانين المنصة والأكاديمية لمنع حظر الحساب",
+          "أطلب منه تحويل المال أولاً ثم أعطيه الرقم",
+          "أتجاهل رسالته ولا أرد عليها نهائياً"
+        ],
+        correct: 1,
+        exp: "الأمانة المهنية والالتزام بشروط المنصات والأكاديميات يحمي حسابك من الإغلاق النهائي ويبارك في رزقك."
+      },
+      {
+        cat: "إدارة الحصص والأكاديميات أونلاين",
+        q: "4. أثناء الحصة التجريبية (Trial Lesson) لطالب جديد، ما أهم عنصر يضمن اشتراكه واستمراره معك؟",
+        options: [
+          "قضاء كامل الوقت في شرح قواعد النحو والتجويد النظري المعقد",
+          "التعرف على هدف الطالب، تقييم مستواه بلطف، وتقديم فائدة عملية ملموسة في أول 15 دقيقة",
+          "إعطاؤه واجباً منزلياً طويلاً من الصفحة الأولى",
+          "الحديث طوال الحصة عن شهاداتك دون إشراك الطالب"
+        ],
+        correct: 1,
+        exp: "الطالب في الحصة التجريبية يبحث عن معلم يفهم هدفه ويشعره بالإنجاز الفوري والراحة النفسية."
+      },
+      {
+        cat: "إدارة الحصص والأكاديميات أونلاين",
+        q: "5. كيف تقول للطالب الأجنبي بالإنجليزية بأسلوب مهذب: (من فضلك أبلغني قبل الحصة بـ 24 ساعة إذا أردت تغيير الموعد)؟",
+        options: [
+          "Never miss my class again or I will block you.",
+          "Please notify me at least 24 hours in advance if you need to reschedule.",
+          "You must come tomorrow at the exact time.",
+          "Why did you change the time today?"
+        ],
+        correct: 1,
+        exp: "عبارة (notify me at least 24 hours in advance if you need to reschedule) هي الصيغة الاحترافية المعتمدة دولياً."
+      },
+      {
+        cat: "إدارة الحصص والأكاديميات أونلاين",
+        q: "6. لاحظت أثناء الحصة أن صوت الطالب يتقطع بشدة بسبب ضعف الإنترنت لديه، ما الحل العملي السريع؟",
+        options: [
+          "الاستمرار في الشرح وكأن الصوت واضح تماماً",
+          "إغلاق الكاميرا لتخفيف استهلاك الإنترنت، أو الانتقال مؤقتاً للكتابة في الشات وإرسال تسجيل صوتي للآية",
+          "إنهاء الحصة فوراً واعتبارها منتهية",
+          "رفع الصوت والصراخ في الميكروفون"
+        ],
+        correct: 1,
+        exp: "إغلاق الفيديو يوفر أكثر من 70% من سرعة الإنترنت ويحافظ على استقرار الصوت واستمرار الفائدة."
+      },
+      {
+        cat: "إدارة الحصص والأكاديميات أونلاين",
+        q: "7. طفل عمره 7 سنوات يدرس القرآن أونلاين ويشعر بالملل بعد 15 دقيقة، ما الاستراتيجية الأفضل لجذب انتباهه؟",
+        options: [
+          "إجباره على الجلوس ساكناً لمدة ساعة كاملة",
+          "استخدام أسلوب المكافآت البصرية (نجوم/ألعاب قصيرة)، وتنويع الأنشطة كل 10 دقائق مع تشجيعه المستمر",
+          "شكواه لوالديه أثناء الحصة",
+          "إعادة قراءة نفس الآية 30 مرة بنبرة رتيبة"
+        ],
+        correct: 1,
+        exp: "الأطفال أونلاين يحتاجون إلى تفاعل بصري سريع ونظام مكافآت وتنويع مستمر للحفاظ على تركيزهم."
+      },
+      {
+        cat: "إدارة الحصص والأكاديميات أونلاين",
+        q: "8. كيف ترد بلباقة على طالب يسألك: (كم شهراً أحتاج لأختم القرآن الكريم كاملاً؟) وهو لا يزال في مستوى الحروف؟",
+        options: [
+          "تحتاج إلى 3 أشهر فقط وستختم بإذن الله",
+          "هذا مستحيل ولن تستطيع الختم أبداً",
+          "الأمر يعتمد على التزامك بالحصص والمراجعة اليومية، وسنضع خطة مرحلية واضحة تبدأ بإتقان القراءة الصحيحة أولاً",
+          "لا أعرف، اسأل إدارة الأكاديمية"
+        ],
+        correct: 2,
+        exp: "الواقعية مع التحفيز وربط الإنجاز بخطة مرحلية ومراجعة يومية يبني ثقة حقيقية مع الطالب."
+      },
+      {
+        cat: "إدارة الحصص والأكاديميات أونلاين",
+        q: "9. في الأكاديميات التي تطلب تقريراً بعد كل حصة (Session Report)، ما أفضل صيغة لكتابة التقرير؟",
+        options: [
+          "كتابة كلمة (تم) أو (جيد) فقط",
+          "تحديد ما تم إنجازه بدقة (اسم السورة والآيات/القاعدة)، نقاط القوة، وما يجب مراجعته للحصة القادمة",
+          "كتابة الشكاوى فقط دون ذكر أي إيجابيات",
+          "ترك خانة التقرير فارغة"
+        ],
+        correct: 1,
+        exp: "التقرير الدقيق يطمئن ولي الأمر وإدارة الأكاديمية على سير الخطة التعليمية ويعكس احترافية المعلم."
+      },
+      {
+        cat: "إدارة الحصص والأكاديميات أونلاين",
+        q: "10. حدث ظرف طارئ للمعلم (انقطاع كهرباء مفاجئ أو مرض شديد) قبل الحصة بساعة، ما التصرف الصحيح؟",
+        options: [
+          "الغياب دون إخبار أحد والاعتذار في اليوم التالي",
+          "الاعتذار الفوري للطالب وإدارة الأكاديمية مع اقتراح موعد تعويضي مناسب في أقرب وقت",
+          "فتح الحصة من الهاتف في الشارع وسط الضوضاء",
+          "إغلاق الهاتف تماماً"
+        ],
+        correct: 1,
+        exp: "الشفافية وسرعة الإبلاغ مع تقديم بديل تعويضي يحفظان مصداقية المعلم واحترام الطلاب له."
+      },
+      {
+        cat: "إدارة الحصص والأكاديميات أونلاين",
+        q: "11. طالب بالغ يخطئ كثيراً في النطق ويشعر بالإحراج الشديد أثناء التلاوة، كيف تعالج هذا الموقف؟",
+        options: [
+          "مقاطعته عند كل حرف وتصحيحه بنبرة حادة",
+          "التركيز على تصحيح الخطأ الجلي أولاً، والثناء على محاولته وجهده وتشجيعه بعبارات محفزة",
+          "تجاهل أخطائه تماماً وعدم تصحيحها",
+          "مقارنته بطلاب آخرين أسرع منه"
+        ],
+        correct: 1,
+        exp: "التدرج في التصحيح وعدم إرباك المبتدئ بكثرة الملاحظات دفعة واحدة يزيل رهبة التلاوة."
+      },
+      {
+        cat: "إدارة الحصص والأكاديميات أونلاين",
+        q: "12. ما معنى مصطلح (Reschedule a lesson) الذي يتكرر كثيراً في رسائل الطلاب الأجانب؟",
+        options: [
+          "إلغاء الاشتراك نهائياً",
+          "إعادة جدولة الحصة / نقلها إلى موعد آخر",
+          "دفع رسوم إضافية",
+          "طلب شهادة تخرج"
+        ],
+        correct: 1,
+        exp: "كلمة Reschedule تعني تغيير موعد الحصة إلى وقت أو يوم آخر."
+      },
+      {
+        cat: "إدارة الحصص والأكاديميات أونلاين",
+        q: "13. عند مشاركة الشاشة (Screen Share) لعرض المصحف أو القاعدة النورانية أونلاين، ما أفضل ممارسة؟",
+        options: [
+          "مشاركة كامل شاشة الكمبيوتر بكل الملفات والإشعارات المفتوحة",
+          "مشاركة نافذة المصحف فقط مع تفعيل وضع (عدم الإزعاج) واستخدام قلم التأشير لتحديد الكلمة",
+          "عدم مشاركة الشاشة والاعتماد على السماع فقط للمبتدئين",
+          "تصغير الخط لأقصى درجة"
+        ],
+        correct: 1,
+        exp: "مشاركة نافذة محددة مع إخفاء الإشعارات والتأشير على الكلمات يرفع تركيز الطالب ويحفظ خصوصيتك."
+      },
+      {
+        cat: "إدارة الحصص والأكاديميات أونلاين",
+        q: "14. كيف تقول للطالب بالإنجليزية: (هل يمكنك مشاركة شاشتك من فضلك؟) لمتابعة قراءته أو واجبه؟",
+        options: [
+          "Close your screen right now.",
+          "Could you please share your screen?",
+          "Look at my camera only.",
+          "Turn off your microphone."
+        ],
+        correct: 1,
+        exp: "Could you please share your screen? هي العبارة المهذبة لطلب مشاركة الشاشة."
+      },
+      {
+        cat: "إدارة الحصص والأكاديميات أونلاين",
+        q: "15. طالب اعتاد الحضور متأخراً 15 دقيقة عن كل حصة ثم يطلب تعويض الوقت في نهاية الحصة رغم أن لديك طالباً آخر بعده، ماذا تفعل؟",
+        options: [
+          "أؤخر الطالب التالي لأرضيه",
+          "أوضح له بلطف أن الحصة تنتهي في موعدها المحدد لوجود طالب آخر بعده، وأشجعه على الدخول في الوقت",
+          "أعطيه الحصة مجاناً في يوم آخر",
+          "أغلق الحصة فجأة دون وداع"
+        ],
+        correct: 1,
+        exp: "احترام مواعيد الطلاب الآخرين مع التوضيح اللطيف يرسخ قيمة الوقت لدى الطالب المتأخر."
+      },
+      {
+        cat: "إدارة الحصص والأكاديميات أونلاين",
+        q: "16. في تعليم اللغة العربية لغير الناطقين بها أونلاين، متى يفضل استخدام اللغة الوسيطة (الإنجليزية)؟",
+        options: [
+          "طوال وقت الحصة بنسبة 100%",
+          "عند الضرورة القصوى لتوضيح معنى مجرد أو قاعدة سريعة، مع الإكثار من العربية المبسطة تدريجياً",
+          "لا تستخدم أبداً حتى لو لم يفهم الطالب حرفاً واحداً لمدة شهر",
+          "تستخدم لقراءة القرآن بدلاً من العربية"
+        ],
+        correct: 1,
+        exp: "اللغة الوسيطة جسر عبور يُستخدم بقدر الحاجة ثم يُسحب تدريجياً لينغمس الطالب في العربية."
+      },
+      {
+        cat: "إدارة الحصص والأكاديميات أونلاين",
+        q: "17. ما المقصود بعبارة (Technical issue) التي يكتبها الطالب في الشات؟",
+        options: [
+          "مشكلة تقنية أو فنية في الصوت أو الإنترنت",
+          "سؤال في أحكام النون الساكنة",
+          "طلب إجازة صيفية",
+          "رغبة في تغيير المنهج"
+        ],
+        correct: 0,
+        exp: "Technical issue تعني وجود عطل فني في الميكروفون أو الكاميرا أو الاتصال."
+      },
+      {
+        cat: "إدارة الحصص والأكاديميات أونلاين",
+        q: "18. لاحظت أن ولي أمر الطفل يجلس بجانبه ويلقنه الإجابة همساً طوال الحصة، كيف تتعامل مع ذلك بلباقة؟",
+        options: [
+          "أطلب من ولي الأمر الخروج من الغرفة بصوت مرتفع",
+          "أشكر ولي الأمر على اهتمامه، وأستأذنه بلطف أن نترك للطفل فرصة التفكير والخطأ ليتعلم الاعتماد على نفسه",
+          "أتوقف عن سؤال الطفل",
+          "أنهي الحصة مبكراً"
+        ],
+        correct: 1,
+        exp: "تقدير حرص ولي الأمر أولاً ثم توضيح الأثر التربوي لترك المساحة للطفل يحقق التعاون الكامل."
+      },
+      {
+        cat: "إدارة الحصص والأكاديميات أونلاين",
+        q: "19. ما أفضل توقيت لتلخيص ما تم أخذه وتحديد الواجب المنزلي (Homework) في الحصة الأونلاين؟",
+        options: [
+          "في أول دقيقة من الحصة",
+          "في آخر 3 إلى 5 دقائق من الحصة مع إرسال الواجب مكتوباً في الشات أو المجموعة",
+          "عدم تحديد أي واجب إطلاقاً",
+          "بعد انتهاء الحصة بيومين"
+        ],
+        correct: 1,
+        exp: "ختام الحصة بتلخيص سريع وواجب مكتوب يثبت المعلومة ويربط الحصة الحالية بالقادمة."
+      },
+      {
+        cat: "إدارة الحصص والأكاديميات أونلاين",
+        q: "20. كيف تقول للطالب بالإنجليزية: (لقد أحرزت تقدماً رائعاً في تلاوتك اليوم، أحسنت!)؟",
+        options: [
+          "You made a lot of mistakes today.",
+          "You made great progress in your recitation today, well done!",
+          "Your reading is still very slow.",
+          "We need to start from the beginning."
+        ],
+        correct: 1,
+        exp: "التعزيز الإيجابي بعبارة (You made great progress in your recitation today) يرفع دافعية الطالب بشكل كبير."
+      },
+
+      // --- القسم الثاني: مصطلحات التجويد وأسئلة تطبيقية بالإنجليزية والعربية (25 سؤالاً) ---
+      {
+        cat: "مصطلحات وأحكام التجويد",
+        q: "21. كيف تشرح مصطلح (الإدغام بغنة) لطالب أجنبي باللغة الإنجليزية؟",
+        options: [
+          "Clear pronunciation without nasal sound",
+          "Merging with Ghunnah (Nasalization)",
+          "Echoing sound at the end of the word",
+          "Hiding the letter completely"
+        ],
+        correct: 1,
+        exp: "الإدغام معناه الدمج أو الإدخال (Merging / Assimilation) والغنة هي (Ghunnah / Nasalization)."
+      },
+      {
+        cat: "مصطلحات وأحكام التجويد",
+        q: "22. ما الحكم التجويدي في قوله تعالى: ﴿مِن يَعْمَلْ﴾ وكيف نسميه بالإنجليزية؟",
+        options: [
+          "إظهار حلقي (Clear Pronunciation)",
+          "إدغام ناقص بغنة (Incomplete Merging with Ghunnah)",
+          "إقلاب (Conversion to Meem)",
+          "إخفاء حقيقي (Hiding)"
+        ],
+        correct: 1,
+        exp: "وقعت الياء (من حروف ينمو) بعد النون الساكنة في كلمتين، فالحكم إدغام ناقص بغنة بمقدار حركتين."
+      },
+      {
+        cat: "مصطلحات وأحكام التجويد",
+        q: "23. كيف نسمي حكم (الإظهار الحلقي) باللغة الإنجليزية؟",
+        options: [
+          "Izhar (Clear Pronunciation from the throat)",
+          "Iqlab (Changing into Meem)",
+          "Qalqalah (Bouncing sound)",
+          "Madd (Elongation)"
+        ],
+        correct: 0,
+        exp: "الإظهار يُترجم بـ (Izhar / Clear Pronunciation) أي نطق النون الساكنة بوضوح تام دون غنة زائدة."
+      },
+      {
+        cat: "مصطلحات وأحكام التجويد",
+        q: "24. في قوله تعالى: ﴿مِن بَعْدِ﴾، ما الحكم التجويدي وكيف تشرحه للطالب بالإنجليزية؟",
+        options: [
+          "Iqlab: Converting the Noon into a hidden Meem with Ghunnah",
+          "Izhar: Pronouncing the Noon clearly",
+          "Idgham without Ghunnah",
+          "Natural Madd"
+        ],
+        correct: 0,
+        exp: "الإقلاب (Iqlab) هو قلب النون الساكنة أو التنوين ميماً مخفاة مع الغنة عند حرف الباء."
+      },
+      {
+        cat: "مصطلحات وأحكام التجويد",
+        q: "25. كيف تشرح صفة (القلقلة - Qalqalah) لطالب غير ناطق بالعربية بطريقة مبسطة؟",
+        options: [
+          "It is a long stretching sound for 6 counts.",
+          "It is an echoing or bouncing sound on the letters (ق ط ب ج د) when they have Sukoon.",
+          "It is a whisper sound from the nose.",
+          "It means stopping completely at the end of the Surah."
+        ],
+        correct: 1,
+        exp: "وصف القلقلة بـ (Echoing / Bouncing sound) يقرب المعنى الصوتي للطالب الأجنبي بوضوح تام."
+      },
+      {
+        cat: "مصطلحات وأحكام التجويد",
+        q: "26. ما نوع المد في قوله تعالى: ﴿إِنَّا أَعْطَيْنَاكَ﴾ عند الوصل، وكم مقداره؟",
+        options: [
+          "مد متصل واجب (4 أو 5 حركات)",
+          "مد جائز منفصل (4 أو 5 حركات) - Separated Madd",
+          "مد طبيعي (حركتان فقط)",
+          "مد لازم كلمي مثقل (6 حركات)"
+        ],
+        correct: 1,
+        exp: "حرف المد في نهاية الكلمة الأولى (إنّا) والهمزة في بداية الكلمة الثانية (أعطيناك) فهو مد جائز منفصل."
+      },
+      {
+        cat: "مصطلحات وأحكام التجويد",
+        q: "27. كيف نفرق للطالب الأجنبي بين حروف (التفخيم) وحروف (الترقيق) بالإنجليزية؟",
+        options: [
+          "Fast letters vs Slow letters",
+          "Heavy / Full-mouth letters (Tafkheem) vs Light / Thin letters (Tarqeeq)",
+          "Silent letters vs Vowel letters",
+          "Long letters vs Short letters"
+        ],
+        correct: 1,
+        exp: "التفخيم يُشرح بـ (Heavy / Full-mouth) والترقيق بـ (Light / Thin)."
+      },
+      {
+        cat: "مصطلحات وأحكام التجويد",
+        q: "28. ما الحكم التجويدي في كلمة ﴿أَنْعَمْتَ﴾ في سورة الفاتحة؟",
+        options: [
+          "إخفاء حقيقي",
+          "إظهار حلقي (لوقوع العين الحلقية بعد النون الساكنة)",
+          "إدغام بغنة",
+          "إقلاب"
+        ],
+        correct: 1,
+        exp: "العين من حروف الإظهار الحلقي الستة (ء هـ ع ح غ خ)، لذا تُنطق النون واضحة بدون غنة مطولة."
+      },
+      {
+        cat: "مصطلحات وأحكام التجويد",
+        q: "29. كيف تسمي (مخارج الحروف) باللغة الإنجليزية عند تدريب الطلاب على النطق الصحيح؟",
+        options: [
+          "Articulation Points (Makharij)",
+          "Stopping Signs (Waqf)",
+          "Quran Chapters (Surahs)",
+          "Short Vowels (Harakat)"
+        ],
+        correct: 0,
+        exp: "مخارج الحروف تُعرف في علم الصوتيات والتجويد بالإنجليزية بـ (Articulation Points)."
+      },
+      {
+        cat: "مصطلحات وأحكام التجويد",
+        q: "30. ما الحكم التجويدي في قوله تعالى: ﴿مِن رَّبِّهِمْ﴾؟",
+        options: [
+          "إدغام كامل بغير غنة (Complete Merging without Ghunnah)",
+          "إدغام بغنة",
+          "إخفاء حقيقي",
+          "إظهار شفوي"
+        ],
+        correct: 0,
+        exp: "اللام والراء (ل، ر) هما حرفا الإدغام بغير غنة، فتُدغم النون في الراء إدغاماً كاملاً بلا غنة."
+      },
+      {
+        cat: "مصطلحات وأحكام التجويد",
+        q: "31. كيف تشرح (الإخفاء الحقيقي - Ikhfa) للطالب بالإنجليزية؟",
+        options: [
+          "Pronouncing the Noon with full clarity",
+          "Hiding the Noon sound between Izhar and Idgham with Ghunnah for two counts",
+          "Converting the Noon into a Waw",
+          "Dropping the letter completely without any sound"
+        ],
+        correct: 1,
+        exp: "الإخفاء حالة وسطى بين الإظهار والإدغام (Hiding the Noon sound) مع بقاء الغنة بمقدار حركتين."
+      },
+      {
+        cat: "مصطلحات وأحكام التجويد",
+        q: "32. في قوله تعالى: ﴿تَرْمِيهِم بِحِجَارَةٍ﴾، ما الحكم التجويدي للميم الساكنة؟",
+        options: [
+          "إدغام مثلين صغير",
+          "إخفاء شفوي (Labial Ikhfa) لوقوع الباء بعد الميم الساكنة",
+          "إظهار شفوي",
+          "قلقلة صغرى"
+        ],
+        correct: 1,
+        exp: "إذا جاءت الباء بعد الميم الساكنة فالحكم إخفاء شفوي (Labial Ikhfa) مع الغنة."
+      },
+      {
+        cat: "مصطلحات وأحكام التجويد",
+        q: "33. ما معنى كلمة (حركتان - Two counts) عند قياس زمن المد الطبيعي أو الغنة؟",
+        options: [
+          "الانتظار لمدة دقيقتين كاملتين",
+          "الزمن اللازم لقبض الإصبع أو بسطه بسرعة معتدلة",
+          "إعادة الكلمة مرتين",
+          "التنفس مرتين أثناء الآية"
+        ],
+        correct: 1,
+        exp: "الحركة تُقاس بزمن قبض الإصبع أو بسطه بحركة طبيعية غير متكلفة."
+      },
+      {
+        cat: "مصطلحات وأحكام التجويد",
+        q: "34. ما الحكم في قوله تعالى: ﴿لَهُم مَّا يَشَاءُونَ﴾؟",
+        options: [
+          "إظهار شفوي",
+          "إدغام مثلين صغير (شفوي) بغنة بمقدار حركتين",
+          "إخفاء حقيقي",
+          "مد عارض للسكون"
+        ],
+        correct: 1,
+        exp: "ميم ساكنة بعدها ميم متحركة تُدغم فيها إدغام مثلين صغير مع غنة أكمل ما تكون."
+      },
+      {
+        cat: "مصطلحات وأحكام التجويد",
+        q: "35. كيف تصف مخرج (الحروف الحلقية - Throat Letters) للطالب الأجنبي؟",
+        options: [
+          "Letters pronounced from the lips",
+          "Letters pronounced from the throat (ء، هـ، ع، ح، غ، خ)",
+          "Letters pronounced from the tip of the tongue",
+          "Letters pronounced from the nasal cavity only"
+        ],
+        correct: 1,
+        exp: "الحروف الحلقية الستة تخرج من أقصى ووسط وأدنى الحلق (Throat)."
+      },
+      {
+        cat: "مصطلحات وأحكام التجويد",
+        q: "36. في قوله تعالى: ﴿قُلْ هُوَ اللَّهُ أَحَدٌ﴾ عند الوقف على كلمة (أحد)، ما نوع القلقلة؟",
+        options: [
+          "قلقلة صغرى (Lesser Qalqalah)",
+          "قلقلة كبرى (Greater Qalqalah) لأن حرف الدال جاء متطرفاً موقوفاً عليه",
+          "لا توجد قلقلة",
+          "إدغام متجانسين"
+        ],
+        correct: 1,
+        exp: "حروف القلقلة (قطب جد) إذا سُكنت في آخر الكلمة عند الوقف تكون قلقلتها كبرى أوضح من وسط الكلمة."
+      },
+      {
+        cat: "مصطلحات وأحكام التجويد",
+        q: "37. ما الحكم في لام لفظ الجلالة في قوله تعالى: ﴿بِسْمِ اللَّهِ﴾؟",
+        options: [
+          "التفخيم (Heavy)",
+          "الترقيق (Light) لأنها سُبقت بحرف مكسور",
+          "الإدغام",
+          "القلقلة"
+        ],
+        correct: 1,
+        exp: "تُرقق لام لفظ الجلالة إذا سُبقت بكسر أصلي أو عارض، وتُفخم إذا سُبقت بفتح أو ضم."
+      },
+      {
+        cat: "مصطلحات وأحكام التجويد",
+        q: "38. ما نوع المد في كلمة ﴿الضَّالِّينَ﴾ في سورة الفاتحة؟",
+        options: [
+          "مد طبيعي حركتان",
+          "مد لازم كلمي مثقل (6 حركات) لوقوع حرف مشدد بعد حرف المد",
+          "مد بدل",
+          "مد صلة صغرى"
+        ],
+        correct: 1,
+        exp: "جاءت اللام المشددة بعد الألف المدية في كلمة واحدة، فيُمد لزوماً بمقدار 6 حركات."
+      },
+      {
+        cat: "مصطلحات وأحكام التجويد",
+        q: "39. كيف تُسمى علامات الوقف في المصحف باللغة الإنجليزية؟",
+        options: [
+          "Stopping Signs / Rules of Waqf",
+          "Short Vowels",
+          "Sun and Moon Letters",
+          "Madd Letters"
+        ],
+        correct: 0,
+        exp: "علامات الوقف تُسمى (Stopping Signs / Rules of Waqf)."
+      },
+      {
+        cat: "مصطلحات وأحكام التجويد",
+        q: "40. ما معنى علامة الوقف (مـ) في المصحف الشريف مثل قوله: ﴿إِنَّمَا يَسْتَجِيبُ الَّذِينَ يَسْمَعُونَ ۘ وَالْمَوْتَىٰ...﴾؟",
+        options: [
+          "وقف ممنوع",
+          "وقف لازم (Mandatory Stop) لأن الوصل قد يغير المعنى المراد",
+          "جواز الوصل أولى",
+          "علامة سجدة تلاوة"
+        ],
+        correct: 1,
+        exp: "الميم الصغيرة الأفقية (مـ) تدل على الوقف اللازم (Mandatory Stop)."
+      },
+      {
+        cat: "مصطلحات وأحكام التجويد",
+        q: "41. ما الحكم في قوله تعالى: ﴿شَيْءٍ قَدِيرٌ﴾؟",
+        options: [
+          "إظهار حلقي",
+          "إخفاء حقيقي مفخم (لأن القاف من حروف الاستعلاء المفخمة)",
+          "إدغام بغير غنة",
+          "إقلاب"
+        ],
+        correct: 1,
+        exp: "القاف من حروف الإخفاء المفخمة، لذا تُفخم غنة الإخفاء لتناسب مخرج القاف."
+      },
+      {
+        cat: "مصطلحات وأحكام التجويد",
+        q: "42. كيف تترجم (الحروف الشمسية والحروف القمرية) للطالب المبتدئ بالإنجليزية؟",
+        options: [
+          "Day Letters and Night Letters",
+          "Sun Letters (الحروف الشمسية) and Moon Letters (الحروف القمرية)",
+          "Hot Letters and Cold Letters",
+          "Upper Letters and Lower Letters"
+        ],
+        correct: 1,
+        exp: "Sun Letters (تُدغم فيها اللام الشمسية) و Moon Letters (تُظهر فيها اللام القمرية)."
+      },
+      {
+        cat: "مصطلحات وأحكام التجويد",
+        q: "43. ما الحكم في النون والميم المشددتين مثل ﴿إِنَّ﴾ و ﴿ثُمَّ﴾؟",
+        options: [
+          "إظهار سريع بدون غنة",
+          "غنة أكمل ما تكون بمقدار حركتين (Ghunnah Mushaddadah)",
+          "قلقلة كبرى",
+          "مد طبيعي"
+        ],
+        correct: 1,
+        exp: "النون والميم المشددتان يجب إظهار الغنة فيهما بمقدار حركتين."
+      },
+      {
+        cat: "مصطلحات وأحكام التجويد",
+        q: "44. في قوله تعالى: ﴿الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ﴾ عند الوقف على (العالمين)، ما نوع المد؟",
+        options: [
+          "مد عارض للسكون (2 أو 4 أو 6 حركات)",
+          "مد واجب متصل",
+          "مد لازم حرفي",
+          "لا يوجد مد"
+        ],
+        correct: 0,
+        exp: "سُكنت النون سكوناً عارضاً لأجل الوقف وقبلها حرف مد (الياء)، فهو مد عارض للسكون."
+      },
+      {
+        cat: "مصطلحات وأحكام التجويد",
+        q: "45. كيف تشرح للطالب الأجنبي الفرق بين (التنوين - Tanween) و (الحركات القصيرة - Short Vowels)؟",
+        options: [
+          "Tanween adds a Noon sound at the end of a noun (an, in, un), while short vowels are (a, i, u).",
+          "Tanween is only used at the beginning of verbs.",
+          "There is no difference between them.",
+          "Tanween means stopping at the end of the page."
+        ],
+        correct: 0,
+        exp: "التنوين نون ساكنة زائدة تلحق آخر الأسماء لفظاً لا خطاً (فتحتان، كسرتان، ضمتان)."
+      },
+
+      // --- القسم الثالث: أوامر وتوجيهات المعلم للطالب داخل الحصة بالإنجليزية (15 سؤالاً) ---
+      {
+        cat: "أوامر وتوجيهات المعلم بالإنجليزية",
+        q: "46. كيف تطلب من الطالب بالإنجليزية: (اقرأ من بداية سورة الفلق من فضلك)؟",
+        options: [
+          "Close Surah Al-Falaq now.",
+          "Please recite from the beginning of Surah Al-Falaq.",
+          "Write Surah Al-Falaq ten times.",
+          "Translate Surah Al-Falaq only."
+        ],
+        correct: 1,
+        exp: "فعل (Recite) هو المصطلح الأدق والأجمل لتلاوة القرآن الكريم بالإنجليزية."
+      },
+      {
+        cat: "أوامر وتوجيهات المعلم بالإنجليزية",
+        q: "47. كيف تقول للطالب بالإنجليزية: (أعد هذه الآية مرة أخرى مع الانتباه لحكم المد)؟",
+        options: [
+          "Skip this Ayah and go to the next page.",
+          "Repeat this Ayah again, paying attention to the Madd (elongation).",
+          "Read faster without stopping.",
+          "Do not stretch any letter here."
+        ],
+        correct: 1,
+        exp: "عبارة (Repeat this Ayah again, paying attention to...) أساسية لتوجيه الطالب بدقة."
+      },
+      {
+        cat: "أوامر وتوجيهات المعلم بالإنجليزية",
+        q: "48. كيف تقول للطالب: (استمع إليّ جيداً أولاً ثم ردد خلفي)؟",
+        options: [
+          "Read before me quickly.",
+          "Listen to me carefully first, then repeat after me.",
+          "Mute your audio and read alone.",
+          "Look away from the Mushaf."
+        ],
+        correct: 1,
+        exp: "التلقين السليم يبدأ بالاستماع الجيد (Listen carefully) ثم المحاكاة (Repeat after me)."
+      },
+      {
+        cat: "أوامر وتوجيهات المعلم بالإنجليزية",
+        q: "49. كيف تطلب من الطالب: (افتح المصحف على صفحة رقم 604)؟",
+        options: [
+          "Open the Mushaf to page 604.",
+          "Close the Mushaf on page 604.",
+          "Buy a new Mushaf today.",
+          "Count the pages of the Mushaf."
+        ],
+        correct: 0,
+        exp: "Open the Mushaf to page... هي الصيغة الصحيحة لتحديد رقم الصفحة."
+      },
+      {
+        cat: "أوامر وتوجيهات المعلم بالإنجليزية",
+        q: "50. كيف توجه الطالب قائلاً: (أطِل الغنة بمقدار حركتين هنا)؟",
+        options: [
+          "Cut the Ghunnah very fast.",
+          "Hold the Ghunnah (nasal sound) for two counts here.",
+          "Pronounce this letter from your throat.",
+          "Stop breathing after this word."
+        ],
+        correct: 1,
+        exp: "فعل (Hold the Ghunnah for two counts) يوضح للطالب إبقاء صوت الغنة زمناً مقداره حركتان."
+      },
+      {
+        cat: "أوامر وتوجيهات المعلم بالإنجليزية",
+        q: "51. كيف تقول للطالب عند التوقف في منتصف الآية بسبب انقطاع النفس: (توقف هنا وابدأ من الكلمة السابقة لتصحيح المعنى)؟",
+        options: [
+          "Never stop in the Quran.",
+          "Stop here, take a breath, and start again from the previous word.",
+          "Continue without breathing.",
+          "End the lesson now."
+        ],
+        correct: 1,
+        exp: "تعليم الطالب آداب الوقف والابتداء (Start again from the previous word) يحافظ على سلامة المعنى."
+      },
+      {
+        cat: "أوامر وتوجيهات المعلم بالإنجليزية",
+        q: "52. كيف تقول للطالب المبتدئ: (افتح فمك قليلاً عند الفتحة، واخفض فكك السفلي عند الكسرة)؟",
+        options: [
+          "Close your mouth for all vowels.",
+          "Open your mouth slightly for Fathah, and lower your jaw for Kasrah.",
+          "Round your lips for Kasrah.",
+          "Use your nose for Fathah."
+        ],
+        correct: 1,
+        exp: "شرح ميكانيكية الفم والفك (Open mouth / Lower jaw / Round lips) يصحح إتمام الحركات فوراً."
+      },
+      {
+        cat: "أوامر وتوجيهات المعلم بالإنجليزية",
+        q: "53. كيف تقول للطالب: (اقرأ الآية الخامسة من سورة الملك)؟",
+        options: [
+          "Recite Ayah number 5 of Surah Al-Mulk.",
+          "Recite Surah 5 of Ayah Al-Mulk.",
+          "Memorize the whole Juz today.",
+          "Spell the word Al-Mulk."
+        ],
+        correct: 0,
+        exp: "Recite Ayah number [X] of Surah [Name] هي القاعدة القياسية لطلب قراءة آية محددة."
+      },
+      {
+        cat: "أوامر وتوجيهات المعلم بالإنجليزية",
+        q: "54. كيف تنبّه الطالب بلطف: (انتبه، لقد قرأتَ الفتحة ضمة في هذه الكلمة)؟",
+        options: [
+          "Your reading is terrible.",
+          "Be careful, you pronounced the Fathah as a Dammah in this word.",
+          "You forgot the whole Surah.",
+          "Read the next page instead."
+        ],
+        correct: 1,
+        exp: "تحديد الخطأ بدقة (You pronounced Fathah as Dammah) يساعد الطالب على تصحيحه في ثوانٍ."
+      },
+      {
+        cat: "أوامر وتوجيهات المعلم بالإنجليزية",
+        q: "55. كيف تطلب من الطالب: (تهجَّ هذه الكلمة حرفاً حرفاً بالحركات)؟",
+        options: [
+          "Spell this word letter by letter with its vowels.",
+          "Hide this word from the screen.",
+          "Read the last word of the page.",
+          "Translate this word into French."
+        ],
+        correct: 0,
+        exp: "Spell this word letter by letter هو الأمر المستخدم في القاعدة النورانية وفتح الرحمن."
+      },
+      {
+        cat: "أوامر وتوجيهات المعلم بالإنجليزية",
+        q: "56. كيف تقول للطالب: (صل الآية الأولى بالآية الثانية بدون توقف)؟",
+        options: [
+          "Stop for ten seconds between the two Ayat.",
+          "Connect the first Ayah to the second Ayah without stopping.",
+          "Repeat the first Ayah five times.",
+          "Skip the second Ayah."
+        ],
+        correct: 1,
+        exp: "فعل (Connect) يُستخدم للتعبير عن وصل الآيات أو الكلمات ببعضها."
+      },
+      {
+        cat: "أوامر وتوجيهات المعلم بالإنجليزية",
+        q: "57. كيف تقول للطالب عند نطق حرف (الضاد) أو (الظاء): (أخرج طرف لسانك قليلاً عند حرف الظاء)؟",
+        options: [
+          "Put the tip of your tongue slightly between your teeth for the letter Dha (ظ).",
+          "Keep your tongue at the bottom of your throat.",
+          "Press your lips tightly together.",
+          "Pronounce it like the English letter Z."
+        ],
+        correct: 0,
+        exp: "توضيح موضع طرف اللسان (Tip of your tongue between your teeth) يمنع خلط الحروف اللثوية بحرف Z."
+      },
+      {
+        cat: "أوامر وتوجيهات المعلم بالإنجليزية",
+        q: "58. كيف تقول للطالب في نهاية الحصة: (راجع الآيات من 1 إلى 10 من سورة النبأ للحصة القادمة)؟",
+        options: [
+          "Forget Surah An-Naba until next year.",
+          "Review Ayat 1 to 10 of Surah An-Naba for our next lesson.",
+          "Start a completely different book.",
+          "Do not open the Mushaf at home."
+        ],
+        correct: 1,
+        exp: "Review Ayat [X] to [Y] of Surah... هو التوجيه الواضح للمراجعة المنزلية."
+      },
+      {
+        cat: "أوامر وتوجيهات المعلم بالإنجليزية",
+        q: "59. كيف تقول للطالب: (اقرأ بصوت أوضح وأبطأ قليلاً حتى نطبق الأحكام بدقة)؟",
+        options: [
+          "Whisper as quietly as possible.",
+          "Recite a little louder and slower so we can apply the rules accurately.",
+          "Finish the page in ten seconds.",
+          "Turn off your camera and read."
+        ],
+        correct: 1,
+        exp: "الترتيل والتمهل (Recite a little slower so we can apply the rules) أساس إتقان التجويد."
+      },
+      {
+        cat: "أوامر وتوجيهات المعلم بالإنجليزية",
+        q: "60. كيف تبدأ الحصة بالدعاء والترحيب المألوف مع الطلاب أونلاين؟",
+        options: [
+          "Assalamu Alaikum! Let's start with Bismillah and ask Allah for beneficial knowledge.",
+          "Why are you here today?",
+          "Open page 500 immediately without greeting.",
+          "The class is already over."
+        ],
+        correct: 0,
+        exp: "البدء بالسلام والبسملة والدعاء بالعلم النافع يضفي السكينة والبركة على مجلس القرآن الكريم."
+      }
+    ];
+
+    // =========================================================================
+    // 10 REWARD CARDS (كروت جوائز ومكاسب للمعلمين)
+    // =========================================================================
+    const REWARDS_10 = [
+      {
+        title: "منحة التميز الأكاديمي (+200 نقطة) 🌟",
+        desc: "تقديراً لأداء فريقكم الرائع، تمنحكم الأكاديمية 200 نقطة مجانية تضاف لرصيدكم فوراً!",
+        type: "points",
+        amount: 200
+      },
+      {
+        title: "درع الحصانة الذهبية 🛡️",
+        desc: "حصل فريقكم على درع الحصانة الذهبية! سيحميكم تلقائياً من أول كارت عقاب يواجهكم.",
+        type: "shield"
+      },
+      {
+        title: "مضاعف النقاط للسؤال القادم (2X) ⚡",
+        desc: "بطاقة التركيز المضاعف! إجابتكم الصحيحة على السؤال القادم ستمنحكم 200 نقطة بدلاً من 100!",
+        type: "double"
+      },
+      {
+        title: "مظروف الحظ المزدوج (اختر مظروفاً) ✉️",
+        desc: "أمام فريقكم مظروفان مغلقان: أحدهما يحتوي على +300 نقطة والآخر على +100 نقطة. اختر بحكمة!",
+        type: "mystery_box"
+      },
+      {
+        title: "نقل نقاط المنافس (+100 نقطة) 🎯",
+        desc: "تفوق استراتيجي! اسحب 100 نقطة من الفريق صاحب أعلى رصيد وأضفها إلى رصيد فريقك!",
+        type: "steal_leader"
+      },
+      {
+        title: "مكافأة الإخلاص والالتزام (+150 نقطة) 💎",
+        desc: "حصل فريقكم على تقييم 5 نجوم من أولياء الأمور! +150 نقطة تضاف إلى رصيدكم.",
+        type: "points",
+        amount: 150
+      },
+      {
+        title: "تعاون المعلمين (+100 نقطة للجميع) 🤝",
+        desc: "روح الفريق الواحد! يحصل فريقك على +150 نقطة، ويحصل كل فريق منافس على +50 نقطة!",
+        type: "share_wealth"
+      },
+      {
+        title: "كنز القاعدة النورانية (+250 نقطة) 📖",
+        desc: "مكافأة كبرى! أضف 250 نقطة كاملة إلى رصيد فريقك الآن!",
+        type: "points",
+        amount: 250
+      },
+      {
+        title: "درع الحصانة + 100 نقطة إضافية 🛡️✨",
+        desc: "مكافأة مزدوجة: درع حماية ضد العقاب القادم بالإضافة إلى +100 نقطة فورية!",
+        type: "shield_and_points"
+      },
+      {
+        title: "هدية الختام المبارك (+200 نقطة) 🕌",
+        desc: "بارك الله في جهودكم في تعليم كتاب الله! +200 نقطة تضاف لرصيد الفريق.",
+        type: "points",
+        amount: 200
+      }
+    ];
+
+    // =========================================================================
+    // 10 PENALTY & LIVE ACTION CHALLENGE CARDS (كروت عقاب وأحكام تطبيقية للمعلمين)
+    // =========================================================================
+    const PENALTIES_10 = [
+      {
+        title: "حكم تطبيقي: شرح مخرج حرف (الضاد) بالإنجليزية! 🎙️",
+        desc: "أمام ممثل الفريق 30 ثانية ليشرح لطالب أجنبي كيف ينطق حرف (الضاد) من حافة اللسان مع الأضراس العليا بالإنجليزية. إذا نجح ينجو، وإلا يُخصم 100 نقطة!",
+        mode: "challenge",
+        penaltyAmount: 100
+      },
+      {
+        title: "عقاب التأخر عن موعد الحصة (-100 نقطة) ⏰",
+        desc: "دخل المعلم الحصة متأخراً 7 دقائق دون عذر مسبق! يُخصم 100 نقطة من رصيد الفريق التزاماً بقواعد الانضباط.",
+        mode: "direct",
+        penaltyAmount: 100
+      },
+      {
+        title: "حكم تمثيلي: إقناع طالب يرغب في الإلغاء المتأخر! 🎭",
+        desc: "مثّل موقفاً حياً: طالب يريد إلغاء الحصة قبل موعدها بـ 15 دقيقة، أقنعه بلباقة واحترافية بسياسة الأكاديمية لتفادي خصم 150 نقطة!",
+        mode: "challenge",
+        penaltyAmount: 150
+      },
+      {
+        title: "حكم التلاوة المتقنة: سورة الفلق بالتجويد! 📖",
+        desc: "على أحد أعضاء الفريق تلاوة سورة الفلق كاملة مع تطبيق القلقلة والغنة والإخفاء بدقة تامة. إن أخطأ يُخصم 100 نقطة!",
+        mode: "challenge",
+        penaltyAmount: 100
+      },
+      {
+        title: "عقاب نسيان كتابة تقرير الحصة (-100 نقطة) 📝",
+        desc: "نسي المعلم رفع تقرير الحصة لإدارة الأكاديمية! يُخصم 100 نقطة من رصيد الفريق.",
+        mode: "direct",
+        penaltyAmount: 100
+      },
+      {
+        title: "حكم الترجمة الفورية: 3 أوامر داخل الحصة! 🌐",
+        desc: "ترجم فوراً بالإنجليزية: (1. افتح المصحف، 2. أطِل الغنة حركتين، 3. ردد خلفي). النجاح ينقذ الفريق من خصم 150 نقطة!",
+        mode: "challenge",
+        penaltyAmount: 150
+      },
+      {
+        title: "عقاب انقطاع الإنترنت وعدم وجود بديل (-100 نقطة) 📡",
+        desc: "انقطع الاتصال ولم يجهز المعلم باقة إنترنت احتياطية على الهاتف! يُخصم 100 نقطة.",
+        mode: "direct",
+        penaltyAmount: 100
+      },
+      {
+        title: "حكم التمييز: أعطِ 3 أمثلة من القرآن على الإقلاب! 🔍",
+        desc: "اذكر 3 كلمات أو آيات قرآنية تحتوي على حكم الإقلاب (نون ساكنة أو تنوين بعدها باء) في 20 ثانية لتفادي خصم 100 نقطة!",
+        mode: "challenge",
+        penaltyAmount: 100
+      },
+      {
+        title: "تبادل النقاط مع الفريق الأقل رصيداً! 🔄",
+        desc: "مفاجأة التحدي! إذا كان فريقك متقدماً في النقاط، يتبادل رصيده مع الفريق صاحب أقل نقاط (ما لم تمتلك درع الحصانة)!",
+        mode: "swap_lowest",
+        penaltyAmount: 0
+      },
+      {
+        title: "حكم الحصة التجريبية: افتتاحية مشوّقة في 30 ثانية! 🚀",
+        desc: "قدّم ترحيباً حاراً وتعارفاً سريعاً لطالب أجنبي جديد في أول حصة تجريبية بالإنجليزية لتفادي خصم 150 نقطة!",
+        mode: "challenge",
+        penaltyAmount: 150
+      }
+    ];
+
+    // =========================================================================
+    // GAME STATE
+    // =========================================================================
+    let teams = [
+      { name: "الفريق الأول: فرسان التجويد", score: 0, shield: false, doubleNext: false, color: "emerald" },
+      { name: "الفريق الثاني: رواد الأونلاين", score: 0, shield: false, doubleNext: false, color: "blue" },
+      { name: "الفريق الثالث: سفراء العربية", score: 0, shield: false, doubleNext: false, color: "amber" }
+    ];
+    let currentTurn = 0; // 0, 1, or 2
+    let cardsDeck = [];
+    let openedCount = 0;
+    let activeCard = null;
+    let mysteryBoxPicked = false;
+
+    // Build & Shuffle 80 Cards
+    function initDeck() {
+      const deck = [];
+
+      QUESTIONS_60.forEach((q, idx) => {
+        deck.push({
+          id: `q-${idx}`,
+          type: 'question',
+          data: q,
+          opened: false
+        });
+      });
+
+      REWARDS_10.forEach((r, idx) => {
+        deck.push({
+          id: `r-${idx}`,
+          type: 'reward',
+          data: r,
+          opened: false
+        });
+      });
+
+      PENALTIES_10.forEach((p, idx) => {
+        deck.push({
+          id: `p-${idx}`,
+          type: 'penalty',
+          data: p,
+          opened: false
+        });
+      });
+
+      // Fisher-Yates Shuffle
+      for (let i = deck.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [deck[i], deck[j]] = [deck[j], deck[i]];
+      }
+      return deck;
+    }
+
+    // Render 80 Cards Board
+    function renderBoard() {
+      const grid = document.getElementById('cardsGrid');
+      grid.innerHTML = '';
+
+      cardsDeck.forEach((card, index) => {
+        const cardWrap = document.createElement('div');
+        cardWrap.className = 'card-scene aspect-[4/3] cursor-pointer';
+
+        let backStyle = '';
+        let backIcon = '';
+        let backLabel = '';
+
+        if (card.type === 'question') {
+          backStyle = 'bg-emerald-50 border-emerald-500 text-emerald-900';
+          backIcon = 'fa-book-open text-emerald-600';
+          backLabel = 'سؤال';
+        } else if (card.type === 'reward') {
+          backStyle = 'bg-amber-50 border-amber-500 text-amber-900';
+          backIcon = 'fa-gift text-amber-500';
+          backLabel = 'جائزة';
+        } else {
+          backStyle = 'bg-rose-50 border-rose-500 text-rose-900';
+          backIcon = 'fa-gavel text-rose-600';
+          backLabel = 'حكم/عقاب';
+        }
+
+        cardWrap.innerHTML = `
+          <div id="card-obj-${index}" class="card-object rounded-xl shadow-sm hover:shadow-md ${card.opened ? 'card-flipped pointer-events-none' : ''}">
+            <!-- Front Cover -->
+            <div class="card-side bg-gradient-to-br from-emerald-900 via-teal-900 to-slate-900 text-white border border-amber-400/40 flex flex-col items-center justify-center p-1 hover:border-amber-300 transition">
+              <span class="text-[9px] text-amber-300/70 font-bold mb-0.5"><i class="fa-solid fa-star-and-crescent"></i></span>
+              <span class="text-base sm:text-xl font-black text-white tracking-tight">${index + 1}</span>
+            </div>
+
+            <!-- Back Revealed -->
+            <div class="card-side card-back border-2 ${backStyle} flex flex-col items-center justify-center p-1 text-center">
+              <i class="fa-solid ${backIcon} text-sm sm:text-base mb-0.5"></i>
+              <span class="text-[9px] sm:text-[10px] font-black">${backLabel}</span>
+            </div>
+          </div>
+        `;
+
+        if (!card.opened) {
+          cardWrap.addEventListener('click', () => onCardClick(index));
+        }
+
+        grid.appendChild(cardWrap);
+      });
+
+      updateScoreboardUI();
+    }
+
+    // Handle Card Click
+    function onCardClick(index) {
+      const card = cardsDeck[index];
+      if (card.opened) return;
+
+      SoundFX.play('flip');
+      card.opened = true;
+      openedCount++;
+      activeCard = card;
+
+      const obj = document.getElementById(`card-obj-${index}`);
+      if (obj) obj.classList.add('card-flipped');
+
+      updateScoreboardUI();
+
+      setTimeout(() => {
+        if (card.type === 'question') {
+          openQuestionModal(card.data);
+        } else if (card.type === 'reward') {
+          openRewardModal(card.data);
+        } else {
+          openPenaltyModal(card.data);
+        }
+      }, 320);
+    }
+
+    // =========================================================================
+    // QUESTION MODAL HANDLERS
+    // =========================================================================
+    let currentQData = null;
+
+    function openQuestionModal(qData) {
+      currentQData = qData;
+      const team = teams[currentTurn];
+
+      document.getElementById('qCategoryBadge').textContent = qData.cat;
+      document.getElementById('qTeamTurnBadge').textContent = `${team.name} ${team.doubleNext ? '(مضاعفة 2X نشطة!)' : ''}`;
+      document.getElementById('qPromptText').textContent = qData.q;
+
+      const optionsBox = document.getElementById('qOptionsContainer');
+      optionsBox.innerHTML = '';
+
+      const feedback = document.getElementById('qFeedbackBox');
+      feedback.className = 'hidden p-3.5 rounded-2xl text-xs sm:text-sm font-bold mb-4 leading-relaxed';
+      document.getElementById('qNextBtn').classList.add('hidden');
+
+      const letters = ['أ', 'ب', 'ج', 'د'];
+      qData.options.forEach((optText, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'q-opt-btn w-full text-right bg-white hover:bg-emerald-50 border-2 border-slate-200 hover:border-emerald-500 p-3 rounded-2xl font-bold text-xs sm:text-sm text-slate-800 transition flex items-center gap-3';
+        btn.innerHTML = `
+          <span class="w-7 h-7 rounded-lg bg-slate-100 text-slate-700 font-black flex items-center justify-center shrink-0">${letters[idx]}</span>
+          <span class="flex-1 leading-relaxed">${optText}</span>
+        `;
+        btn.onclick = () => evaluateQuestion(idx, btn);
+        optionsBox.appendChild(btn);
+      });
+
+      showModal('questionModal');
+    }
+
+    function evaluateQuestion(selectedIdx, btnEl) {
+      const allBtns = document.querySelectorAll('.q-opt-btn');
+      allBtns.forEach(b => b.classList.add('pointer-events-none'));
+
+      const feedback = document.getElementById('qFeedbackBox');
+      feedback.classList.remove('hidden');
+      const team = teams[currentTurn];
+
+      if (selectedIdx === currentQData.correct) {
+        SoundFX.play('correct');
+        btnEl.classList.remove('bg-white', 'border-slate-200');
+        btnEl.classList.add('bg-emerald-600', 'border-emerald-700', 'text-white');
+        btnEl.querySelector('span').className = 'w-7 h-7 rounded-lg bg-white text-emerald-700 font-black flex items-center justify-center shrink-0';
+
+        let earned = 100;
+        if (team.doubleNext) {
+          earned = 200;
+          team.doubleNext = false;
+        }
+        team.score += earned;
+
+        feedback.className = 'p-3.5 rounded-2xl text-xs sm:text-sm font-bold mb-4 leading-relaxed bg-emerald-100 border border-emerald-400 text-emerald-950';
+        feedback.innerHTML = `✅ إجابة صحيحة وموفقة! تم إضافة <strong>+${earned} نقطة</strong> لرصيد ${team.name}.<br><span class="text-xs font-semibold text-emerald-800 mt-1 block">💡 التوضيح: ${currentQData.exp}</span>`;
+      } else {
+        SoundFX.play('wrong');
+        btnEl.classList.remove('bg-white', 'border-slate-200');
+        btnEl.classList.add('bg-rose-600', 'border-rose-700', 'text-white');
+
+        allBtns[currentQData.correct].classList.remove('bg-white', 'border-slate-200');
+        allBtns[currentQData.correct].classList.add('bg-emerald-100', 'border-emerald-500', 'text-emerald-950');
+
+        if (team.doubleNext) team.doubleNext = false;
+
+        feedback.className = 'p-3.5 rounded-2xl text-xs sm:text-sm font-bold mb-4 leading-relaxed bg-rose-100 border border-rose-400 text-rose-950';
+        feedback.innerHTML = `❌ إجابة غير دقيقة! الإجابة الصحيحة موضحة باللون الأخضر.<br><span class="text-xs font-semibold text-rose-900 mt-1 block">💡 التوضيح: ${currentQData.exp}</span>`;
+      }
+
+      updateScoreboardUI();
+      document.getElementById('qNextBtn').classList.remove('hidden');
+    }
+
+    // =========================================================================
+    // REWARD MODAL HANDLERS
+    // =========================================================================
+    let currentRewardData = null;
+
+    function openRewardModal(rData) {
+      currentRewardData = rData;
+      mysteryBoxPicked = false;
+      SoundFX.play('reward');
+
+      const team = teams[currentTurn];
+      document.getElementById('rTeamBadge').textContent = `جائزة من نصيب: ${team.name}`;
+      document.getElementById('rTitle').textContent = rData.title;
+      document.getElementById('rDesc').textContent = rData.desc;
+
+      const interactiveBox = document.getElementById('rInteractiveBox');
+      const claimBtn = document.getElementById('rClaimBtn');
+
+      if (rData.type === 'mystery_box') {
+        interactiveBox.classList.remove('hidden');
+        claimBtn.classList.add('hidden');
+        interactiveBox.innerHTML = `
+          <div class="grid grid-cols-2 gap-3">
+            <button onclick="pickMysteryEnvelope(1)" class="p-4 rounded-2xl bg-amber-50 border-2 border-amber-400 hover:bg-amber-100 transition flex flex-col items-center gap-1">
+              <i class="fa-solid fa-envelope-open-text text-3xl text-amber-600"></i>
+              <span class="font-black text-sm text-amber-950">المظروف الذهبي (1)</span>
+            </button>
+            <button onclick="pickMysteryEnvelope(2)" class="p-4 rounded-2xl bg-emerald-50 border-2 border-emerald-400 hover:bg-emerald-100 transition flex flex-col items-center gap-1">
+              <i class="fa-solid fa-envelope-open-text text-3xl text-emerald-600"></i>
+              <span class="font-black text-sm text-emerald-950">المظروف الزمردي (2)</span>
+            </button>
+          </div>
+        `;
+      } else {
+        interactiveBox.classList.add('hidden');
+        claimBtn.classList.remove('hidden');
+      }
+
+      showModal('rewardModal');
+    }
+
+    function pickMysteryEnvelope(choice) {
+      if (mysteryBoxPicked) return;
+      mysteryBoxPicked = true;
+      SoundFX.play('correct');
+
+      const bonus = choice === 1 ? 300 : 100;
+      teams[currentTurn].score += bonus;
+      updateScoreboardUI();
+
+      document.getElementById('rInteractiveBox').innerHTML = `
+        <div class="p-4 rounded-2xl bg-emerald-100 border border-emerald-400 text-emerald-950 font-black text-base">
+          🎉 رائع! يحتوي المظروف رقم (${choice}) على +${bonus} نقطة! تمت إضافتها لرصيد فريقك.
+        </div>
+      `;
+      document.getElementById('rClaimBtn').classList.remove('hidden');
+    }
+
+    function claimRewardAndClose() {
+      const team = teams[currentTurn];
+      const r = currentRewardData;
+
+      if (r.type === 'points') {
+        team.score += r.amount;
+        showToast(`تمت إضافة +${r.amount} نقطة لـ ${team.name}!`);
+      } else if (r.type === 'shield') {
+        team.shield = true;
+        showToast(`حصل ${team.name} على درع الحصانة الذهبية 🛡️`);
+      } else if (r.type === 'double') {
+        team.doubleNext = true;
+        showToast(`تم تفعيل مضاعفة النقاط (2X) للسؤال القادم!`);
+      } else if (r.type === 'steal_leader') {
+        let maxScore = -1;
+        let leaderIdx = -1;
+        teams.forEach((t, idx) => {
+          if (idx !== currentTurn && t.score > maxScore) {
+            maxScore = t.score;
+            leaderIdx = idx;
+          }
+        });
+        if (leaderIdx !== -1 && teams[leaderIdx].score >= 100) {
+          teams[leaderIdx].score -= 100;
+          team.score += 100;
+          showToast(`تم نقل 100 نقطة من ${teams[leaderIdx].name} إلى ${team.name}!`);
+        } else {
+          team.score += 100;
+          showToast(`حصل ${team.name} على +100 نقطة مكافأة!`);
+        }
+      } else if (r.type === 'share_wealth') {
+        teams.forEach((t, idx) => {
+          t.score += (idx === currentTurn ? 150 : 50);
+        });
+        showToast(`+150 نقطة لفريقك و +50 نقطة لكل فريق منافس!`);
+      } else if (r.type === 'shield_and_points') {
+        team.shield = true;
+        team.score += 100;
+        showToast(`درع الحصانة + 100 نقطة لـ ${team.name}!`);
+      }
+
+      finishTurnAndClose('rewardModal');
+    }
+
+    // =========================================================================
+    // PENALTY & LIVE ACTION CHALLENGE MODAL HANDLERS
+    // =========================================================================
+    let currentPenaltyData = null;
+
+    function openPenaltyModal(pData) {
+      currentPenaltyData = pData;
+      SoundFX.play('wrong');
+
+      const team = teams[currentTurn];
+      document.getElementById('pTeamBadge').textContent = `بطاقة موجهة إلى: ${team.name}`;
+      document.getElementById('pTitle').textContent = pData.title;
+      document.getElementById('pDesc').textContent = pData.desc;
+
+      const shieldNotice = document.getElementById('pShieldNotice');
+      const btnsArea = document.getElementById('pButtonsArea');
+      btnsArea.innerHTML = '';
+
+      // Check if team has Golden Shield!
+      if (team.shield) {
+        team.shield = false;
+        shieldNotice.classList.remove('hidden');
+        updateScoreboardUI();
+
+        btnsArea.innerHTML = `
+          <button onclick="finishTurnAndClose('penaltyModal')" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-black py-3 rounded-2xl shadow transition">
+            الحمد لله! الانتقال للفريق التالي بسلام 🛡️
+          </button>
+        `;
+        showModal('penaltyModal');
+        return;
+      }
+
+      shieldNotice.classList.add('hidden');
+
+      if (pData.mode === 'challenge') {
+        btnsArea.innerHTML = `
+          <button onclick="resolveChallenge(true)" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-black py-3 px-3 rounded-2xl shadow transition text-xs sm:text-sm">
+            <i class="fa-solid fa-check ml-1"></i> نجح الفريق في تنفيذ الحكم (لا خصم)
+          </button>
+          <button onclick="resolveChallenge(false)" class="flex-1 bg-rose-600 hover:bg-rose-700 text-white font-black py-3 px-3 rounded-2xl shadow transition text-xs sm:text-sm">
+            <i class="fa-solid fa-xmark ml-1"></i> لم ينجح (خصم ${pData.penaltyAmount} نقطة)
+          </button>
+        `;
+      } else if (pData.mode === 'swap_lowest') {
+        btnsArea.innerHTML = `
+          <button onclick="applySwapLowest()" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-black py-3 rounded-2xl shadow transition">
+            تنفيذ تبادل النقاط والانتقال للفريق التالي 🔄
+          </button>
+        `;
+      } else {
+        btnsArea.innerHTML = `
+          <button onclick="applyDirectPenalty()" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-black py-3 rounded-2xl shadow transition">
+            تطبيق الخصم (-${pData.penaltyAmount} نقطة) والمتابعة
+          </button>
+        `;
+      }
+
+      showModal('penaltyModal');
+    }
+
+    function resolveChallenge(succeeded) {
+      const team = teams[currentTurn];
+      if (succeeded) {
+        SoundFX.play('correct');
+        showToast(`أبدع ${team.name} في تنفيذ الحكم العملي وتفادى الخصم! 👏`);
+      } else {
+        SoundFX.play('wrong');
+        team.score = Math.max(0, team.score - currentPenaltyData.penaltyAmount);
+        showToast(`تم خصم ${currentPenaltyData.penaltyAmount} نقطة من ${team.name}.`);
+      }
+      finishTurnAndClose('penaltyModal');
+    }
+
+    function applyDirectPenalty() {
+      const team = teams[currentTurn];
+      team.score = Math.max(0, team.score - currentPenaltyData.penaltyAmount);
+      showToast(`تم خصم ${currentPenaltyData.penaltyAmount} نقطة من ${team.name}.`);
+      finishTurnAndClose('penaltyModal');
+    }
+
+    function applySwapLowest() {
+      const team = teams[currentTurn];
+      let lowestIdx = currentTurn;
+      teams.forEach((t, idx) => {
+        if (t.score < teams[lowestIdx].score) {
+          lowestIdx = idx;
+        }
+      });
+
+      if (lowestIdx !== currentTurn) {
+        const temp = team.score;
+        team.score = teams[lowestIdx].score;
+        teams[lowestIdx].score = temp;
+        showToast(`تم تبادل النقاط بين ${team.name} و ${teams[lowestIdx].name}!`);
+      } else {
+        showToast(`${team.name} لديه أقل رصيد بالفعل، لم تتغير النقاط!`);
+      }
+      finishTurnAndClose('penaltyModal');
+    }
+
+    // =========================================================================
+    // TURN ROTATION & SCOREBOARD CONTROLS
+    // =========================================================================
+    function finishTurnAndClose(modalId) {
+      closeModal(modalId);
+      // Advance turn to next team (0 -> 1 -> 2 -> 0)
+      currentTurn = (currentTurn + 1) % 3;
+      updateScoreboardUI();
+    }
+
+    function selectTurn(teamIdx) {
+      currentTurn = teamIdx;
+      updateScoreboardUI();
+      showToast(`تم نقل الدور يدوياً إلى: ${teams[teamIdx].name}`);
+    }
+
+    function updateTeamName(teamIdx, newName) {
+      if (newName.trim()) {
+        teams[teamIdx].name = newName.trim();
+        updateScoreboardUI();
+      }
+    }
+
+    function adjustScore(teamIdx, delta) {
+      teams[teamIdx].score = Math.max(0, teams[teamIdx].score + delta);
+      updateScoreboardUI();
+    }
+
+    function updateScoreboardUI() {
+      document.getElementById('remainingCount').textContent = 80 - openedCount;
+      document.getElementById('roundDisplay').textContent = Math.floor(openedCount / 3) + 1;
+      document.getElementById('currentTurnAnnouncer').textContent = teams[currentTurn].name;
+
+      const styles = [
+        { active: 'bg-emerald-50/80 border-emerald-600 team-active-card', idle: 'bg-white border-slate-200 hover:border-emerald-400' },
+        { active: 'bg-blue-50/80 border-blue-600 team-active-card', idle: 'bg-white border-slate-200 hover:border-blue-400' },
+        { active: 'bg-amber-50/80 border-amber-500 team-active-card', idle: 'bg-white border-slate-200 hover:border-amber-400' }
+      ];
+
+      teams.forEach((team, idx) => {
+        document.getElementById(`teamScore-${idx}`).textContent = team.score;
+        const card = document.getElementById(`teamCard-${idx}`);
+        const turnBadge = document.getElementById(`turnBadge-${idx}`);
+        const idleBadge = document.getElementById(`idleBadge-${idx}`);
+        const badgesBox = document.getElementById(`badges-${idx}`);
+
+        if (idx === currentTurn) {
+          card.className = `cursor-pointer rounded-2xl p-3.5 border-2 transition-all relative ${styles[idx].active}`;
+          turnBadge.classList.remove('hidden');
+          if (idleBadge) idleBadge.classList.add('hidden');
+        } else {
+          card.className = `cursor-pointer rounded-2xl p-3.5 border-2 transition-all relative ${styles[idx].idle}`;
+          turnBadge.classList.add('hidden');
+          if (idleBadge) idleBadge.classList.remove('hidden');
+        }
+
+        // Render active powerups (Shield / Double)
+        let badgesHtml = '';
+        if (team.shield) {
+          badgesHtml += `<span class="bg-emerald-600 text-white text-[10px] px-2 py-0.5 rounded-full font-bold" title="حصانة ضد العقاب">🛡️ حصانة</span>`;
+        }
+        if (team.doubleNext) {
+          badgesHtml += `<span class="bg-amber-500 text-slate-950 text-[10px] px-2 py-0.5 rounded-full font-black" title="مضاعفة النقاط للسؤال القادم">2X</span>`;
+        }
+        badgesBox.innerHTML = badgesHtml;
+      });
+    }
+
+    // =========================================================================
+    // WINNER PODIUM & RESET
+    // =========================================================================
+    function openFinishModal() {
+      SoundFX.play('correct');
+      const sorted = [...teams].sort((a, b) => b.score - a.score);
+      const podium = document.getElementById('podiumContainer');
+      const medals = ['🥇 المركز الأول (البطل)', '🥈 المركز الثاني', '🥉 المركز الثالث'];
+      const rowStyles = [
+        'bg-gradient-to-l from-amber-100 to-yellow-50 border-2 border-amber-400',
+        'bg-slate-100 border border-slate-300',
+        'bg-orange-50/70 border border-orange-200'
+      ];
+
+      podium.innerHTML = sorted.map((t, i) => `
+        <div class="p-3.5 rounded-2xl flex items-center justify-between ${rowStyles[i]}">
+          <div>
+            <div class="text-xs font-extrabold text-slate-500">${medals[i]}</div>
+            <div class="text-base font-black text-slate-900">${t.name}</div>
+          </div>
+          <div class="text-2xl font-black text-emerald-800">
+            ${t.score} <span class="text-xs font-bold">نقطة</span>
+          </div>
+        </div>
+      `).join('');
+
+      if (typeof confetti === 'function') {
+        confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
+      }
+      showModal('winnerModal');
+    }
+
+    function confirmReset() {
+      showModal('confirmModal');
+    }
+
+    function resetGame() {
+      closeModal('confirmModal');
+      closeModal('winnerModal');
+      closeModal('questionModal');
+      closeModal('rewardModal');
+      closeModal('penaltyModal');
+
+      teams.forEach(t => {
+        t.score = 0;
+        t.shield = false;
+        t.doubleNext = false;
+      });
+      currentTurn = 0;
+      openedCount = 0;
+      cardsDeck = initDeck();
+      renderBoard();
+      showToast('تمت إعادة ضبط اللوحة وخلط الـ 80 كارتاً بنجاح!');
+    }
+
+    // Helpers
+    function showModal(id) { document.getElementById(id).classList.remove('hidden'); }
+    function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+    function showToast(msg) {
+      const el = document.createElement('div');
+      el.className = 'fixed bottom-5 left-1/2 -translate-x-1/2 bg-slate-900 text-amber-300 border border-amber-400/60 px-4 py-2.5 rounded-2xl shadow-2xl text-xs sm:text-sm font-bold z-50 transition-opacity duration-300 pointer-events-none';
+      el.textContent = msg;
+      document.body.appendChild(el);
+      setTimeout(() => {
+        el.style.opacity = '0';
+        setTimeout(() => el.remove(), 300);
+      }, 2800);
+    }
+
+    window.onload = function () {
+      cardsDeck = initDeck();
+      renderBoard();
+    };
+  </script>
+</body>
+</html>
